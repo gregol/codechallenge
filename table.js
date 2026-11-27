@@ -7,7 +7,7 @@ const records = [
 ]
 
 // The fields/keys on each object are the 'column names' and each instance represents a row or a record.
-// On the other hand, a column-major data structure has a more compact representation that does not repeat column names, in javascript it consists of an object of arrays e.g.
+// On the other hand, a column-major data structure has a more compact representation that does not repeat column names, in javascript it consists of an object of arrays. e.g.
 
 const table = {
   name: ['alice', 'bob', 'charly'],
@@ -19,5 +19,23 @@ const table = {
 // pivotRecords(records) is equal to `table`
 
 export const pivotRecords = records => {
-  /* transform records into a table */
+  const columns = {}
+  const rowCount = records.length
+
+  records.forEach((record, rowIndex) => {
+    for (const key of Object.keys(record)) {
+      if (!Object.prototype.hasOwnProperty.call(columns, key)) {
+        Object.defineProperty(columns, key, {
+          value: new Array(rowCount).fill(undefined),
+          enumerable: true,
+          writable: true,
+          configurable: true
+        })
+      }
+
+      columns[key][rowIndex] = record[key]
+    }
+  })
+
+  return columns
 }
